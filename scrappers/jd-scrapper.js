@@ -36,7 +36,7 @@ async function start() {
     let shoes = {}
     for (let i = 0; i < 1; i++) {
         //TODO: PASS MAX MIN TO ASYNC AS EQUAL TO I 
-        let data = await page.evaluate(async (i) => {
+        let data = await page.evaluate(async (MAX, MIN, i) => {
 
             //Random Scroll
             await new Promise((resolve) => {
@@ -50,7 +50,7 @@ async function start() {
                         clearInterval(timer)
                         resolve()
                     }
-                }, Math.random() * (5000 - 2000) + 2000)
+                }, Math.random() * (MAX - MIN) + MIN)
             })
 
             let titles = Array.from(document.querySelectorAll('.itemTitle')).map(x => x.textContent.trim())
@@ -65,7 +65,7 @@ async function start() {
             }
 
             return { titles, prices, urls, images, nextPage }
-        }, i)
+        }, MAX, MIN, i)
         
         //Get all data to shoes object with ternary operator
         shoes.titles = shoes.titles ? shoes.titles.concat(data.titles) : data.titles
