@@ -54,6 +54,7 @@ async function start() {
 
             let titles = Array.from(document.querySelectorAll('.itemTitle')).map(x => x.textContent.trim())
             let prices = Array.from(document.querySelectorAll('.pri')).map(x => x.textContent.split("- ")[0])
+            //TODO: add base url to urls
             let urls = Array.from(document.querySelectorAll('.itemTitle > a'), a => a.getAttribute("href"))
             let images = Array.from(document.querySelectorAll(".thumbnail.overlay-thumbnail img")).map(x => x.getAttribute("data-src")) 
 
