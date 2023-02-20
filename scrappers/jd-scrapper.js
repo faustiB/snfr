@@ -34,8 +34,7 @@ async function start() {
     await handleCookiesJdSports(page)
 
     let shoes = {}
-    for (let i = 0; i < 1; i++) {
-        //TODO: PASS MAX MIN TO ASYNC AS EQUAL TO I 
+    for (let i = 0; i < 5; i++) {
         let data = await page.evaluate(async (MAX, MIN, i) => {
 
             //Random Scroll
