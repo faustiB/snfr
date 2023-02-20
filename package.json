@@ -1,0 +1,31 @@
+{
+  "name": "snfr",
+  "version": "1.0.0",
+  "description": "Webscrapper snfr",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/faustiB/snfr.git"
+  },
+  "author": "Faozi Bouybaouene Gadrouz",
+  "license": "ISC",
+  "dependencies": {
+    "dom-parser": "^0.1.6",
+    "express": "^4.18.2",
+    "jsdom": "^21.1.0",
+    "nodemon": "^2.0.20",
+    "puppeteer": "^19.2.2",
+    "puppeteer-extra": "^3.3.4",
+    "puppeteer-extra-plugin-stealth": "^2.11.1"
+  },
+  "bugs": {
+    "url": "https://github.com/faustiB/snfr/issues"
+  },
+  "homepage": "https://github.com/faustiB/snfr#readme"
+}
+
+
