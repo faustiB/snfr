@@ -56,7 +56,7 @@ async function start() {
             let prices = Array.from(document.querySelectorAll('.pri')).map(x => x.textContent.split("- ")[0])
             //TODO: add base url to urls
             let urls = Array.from(document.querySelectorAll('.itemTitle > a'), a => a.getAttribute("href"))
-            let images = Array.from(document.querySelectorAll(".thumbnail.overlay-thumbnail img")).map(x => x.getAttribute("data-src")) 
+            let images = Array.from(document.querySelectorAll(".thumbnail.overlay-thumbnail img")).map(x => x.getAttribute("data-src"))
 
             if (i === 0) {
                 nextPage = Array.from(document.querySelectorAll(".pageLinks > a"), a => a.getAttribute("href"))[5]
@@ -66,7 +66,11 @@ async function start() {
 
             return { titles, prices, urls, images, nextPage }
         }, MAX, MIN, i)
-        
+
+        let sizes = Array.from(document.querySelectorAll("#productSizeStock > button")).map(x => x.innerHTML)
+        //remove \t 
+        sizes = sizes.map(x => x.replace(/\t/g, ''))
+
         //Get all data to shoes object with ternary operator
         shoes.titles = shoes.titles ? shoes.titles.concat(data.titles) : data.titles
         shoes.prices = shoes.prices ? shoes.prices.concat(data.prices) : data.prices
@@ -77,10 +81,44 @@ async function start() {
         let urlToGo = baseURL + data.nextPage
         await page.goto(urlToGo, { waitUntil: 'networkidle0' })
     }
-    console.log(shoes)
+    //visit each shoe 
+    let allSizes = []
+    for (let i = 0; i < shoes.urls.length; i++) {
+        let url = baseURL + shoes.urls[i]
+        await page.goto(url, { waitUntil: 'networkidle0' })
+        let attrs = await page.evaluate(async () => {
+            return Array.from(document.querySelectorAll("#productSizeStock > button")).map(x => x.getAttribute("data-stock"))
+        })
+
+        let sizes = await page.evaluate(async () => {
+            let sizesDirty  = Array.from(document.querySelectorAll("#productSizeStock > button")).map(x => x.textContent)
+            sizesDirty = sizesDirty.map(x => x.replace(/\t/g, ' '))
+            //TODO: Resolve Adidas issue with the /3
+            let sizesClean = []
+            for (let i = 0; i < sizes.length; i++) {
+                sizesClean.push(sizes[i][4].sizesDirty(/(\r\n|\n|\r)/gm, ""))
+            }
+            return sizesClean
+        })
+        let sizesAvailable = []
+        for (let i = 0; i < attrs.length; i++) {
+            if (attrs[i] === "1") {
+                sizesAvailable.push(sizes[i][4])
+            }
+        }
+        allSizes.push(sizesAvailable)
+    }
+    shoes.sizes = allSizes
     await browser.close()
+    return shoes
 }
 
 module.exports = {
     start
+}
+
+for (let i = 0; i < attrs.length; i++) {
+    if (attrs[i] === "1") {
+        s2.push(sizes[i][4])
+    }
 }
