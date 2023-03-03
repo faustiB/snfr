@@ -34,7 +34,7 @@ async function start() {
     await handleCookiesJdSports(page)
 
     let shoes = {}
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 1; i++) {
         let data = await page.evaluate(async (MAX, MIN, i) => {
 
             //Random Scroll
@@ -66,10 +66,6 @@ async function start() {
 
             return { titles, prices, urls, images, nextPage }
         }, MAX, MIN, i)
-
-        let sizes = Array.from(document.querySelectorAll("#productSizeStock > button")).map(x => x.innerHTML)
-        //remove \t 
-        sizes = sizes.map(x => x.replace(/\t/g, ''))
 
         //Get all data to shoes object with ternary operator
         shoes.titles = shoes.titles ? shoes.titles.concat(data.titles) : data.titles
@@ -110,6 +106,7 @@ async function start() {
     }
     shoes.sizes = allSizes
     await browser.close()
+    console.log(shoes)
     return shoes
 }
 
@@ -117,8 +114,8 @@ module.exports = {
     start
 }
 
-for (let i = 0; i < attrs.length; i++) {
-    if (attrs[i] === "1") {
-        s2.push(sizes[i][4])
-    }
-}
+// for (let i = 0; i < attrs.length; i++) {
+//     if (attrs[i] === "1") {
+//         s2.push(sizes[i][4])
+//     }
+// }
