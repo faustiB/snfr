@@ -85,15 +85,13 @@ async function start() {
         let attrs = await page.evaluate(async () => {
             return Array.from(document.querySelectorAll("#productSizeStock > button")).map(x => x.getAttribute("data-stock"))
         })
-
         let sizes = await page.evaluate(async () => {
             let sizesDirty  = Array.from(document.querySelectorAll("#productSizeStock > button")).map(x => x.textContent)
             sizesDirty = sizesDirty.map(x => x.replace(/\t/g, ' '))
-            //TODO: Resolve Adidas issue with the /3
-            let sizesClean = []
-            for (let i = 0; i < sizes.length; i++) {
-                sizesClean.push(sizes[i][4].sizesDirty(/(\r\n|\n|\r)/gm, ""))
-            }
+            sizesDirty = sizesDirty.map(x => x.replace(/(\r\n|\n|\r)/gm, " "))
+            sizesDirty = sizesDirty.map(x => x.split(' '))
+            sizesClean = sizesDirty.map(x => x[5].concat(" "+x[6]).trim())
+
             return sizesClean
         })
         let sizesAvailable = []
