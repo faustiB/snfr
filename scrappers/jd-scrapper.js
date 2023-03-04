@@ -34,7 +34,7 @@ async function start() {
     await handleCookiesJdSports(page)
 
     let shoes = {}
-    for (let i = 0; i < 1; i++) {
+    for (let i = 0; i < 5; i++) {
         let data = await page.evaluate(async (MAX, MIN, i) => {
 
             //Random Scroll
@@ -113,9 +113,3 @@ async function start() {
 module.exports = {
     start
 }
-
-// for (let i = 0; i < attrs.length; i++) {
-//     if (attrs[i] === "1") {
-//         s2.push(sizes[i][4])
-//     }
-// }
