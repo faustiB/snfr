@@ -1,5 +1,5 @@
 const functions = require("firebase-functions");
-
+const jdScrapper = require("../scrappers/jd-scrapper");
 // // Create and deploy your first functions
 // // https://firebase.google.com/docs/functions/get-started
 //
@@ -8,9 +8,18 @@ const admin = require('firebase-admin')
 
 admin.initializeApp()
 
-exports.helloWorld = functions.https.onRequest((request, response) => {
-  functions.logger.info("Hello logs!", {structuredData: true});
-  response.send("Hello from Firebase!");
+exports.helloWorld = functions.https.onRequest(async (request, res) => {
+  let shoes = await jdScrapper.start()
+  for (let i = 0; i < shoes.titles.length; i++) {
+    await admin.firestore().collection('shoes').add({
+      title: shoes.titles[i],
+      price: shoes.prices[i],
+      url: shoes.urls[i],
+      image: shoes.images[i],
+      sizes: shoes.sizes[i]
+    })
+  }
+  res.json(shoes);
 });
 // Take the text parameter passed to this HTTP endpoint and insert it into
 // Firestore under the path /messages/:documentId/original

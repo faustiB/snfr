@@ -54,7 +54,6 @@ async function start() {
 
             let titles = Array.from(document.querySelectorAll('.itemTitle')).map(x => x.textContent.trim())
             let prices = Array.from(document.querySelectorAll('.pri')).map(x => x.textContent.split("- ")[0])
-            //TODO: add base url to urls
             let urls = Array.from(document.querySelectorAll('.itemTitle > a'), a => a.getAttribute("href"))
             let images = Array.from(document.querySelectorAll(".thumbnail.overlay-thumbnail img")).map(x => x.getAttribute("data-src"))
 
@@ -77,11 +76,12 @@ async function start() {
         let urlToGo = baseURL + data.nextPage
         await page.goto(urlToGo, { waitUntil: 'networkidle0' })
     }
-    //visit each shoe 
     let allSizes = []
-    for (let i = 0; i < shoes.urls.length; i++) {
+    // for (let i = 0; i < shoes.urls.length; i++) {
+    for (let i = 0; i < 10; i++) {
         let url = baseURL + shoes.urls[i]
         await page.goto(url, { waitUntil: 'networkidle0' })
+        await sleep(Math.random() * (MAX - MIN) + MIN)
         let attrs = await page.evaluate(async () => {
             return Array.from(document.querySelectorAll("#productSizeStock > button")).map(x => x.getAttribute("data-stock"))
         })
@@ -97,7 +97,7 @@ async function start() {
         let sizesAvailable = []
         for (let i = 0; i < attrs.length; i++) {
             if (attrs[i] === "1") {
-                sizesAvailable.push(sizes[i][4])
+                sizesAvailable.push(sizes[i])
             }
         }
         allSizes.push(sizesAvailable)
@@ -108,6 +108,11 @@ async function start() {
     return shoes
 }
 
+function helloWorld() {
+    console.log('Hello World')
+    return "HELLOOOOOOOOOOOOO3"
+}
+
 module.exports = {
-    start
+    start, helloWorld
 }
