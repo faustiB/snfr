@@ -1,11 +1,15 @@
 const functions = require("firebase-functions");
+const jdScrapper = require("./scrappers/jd-scrapper");
+const nikeScrapper = require("./scrappers/nike-scrapper");
 
 const admin = require('firebase-admin')
 
 admin.initializeApp()
 
 exports.helloWorld = functions.https.onRequest(async (request, res) => {
-  res.json("Hello from Firebase!");
+  //let jdShoes = await jdScrapper.start();
+  let nikeShoes = await nikeScrapper.start();
+  res.json(nikeShoes);
 });
 
 
