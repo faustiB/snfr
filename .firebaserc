@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "snfr-331fb"
-  }
+    "default": "snfr-331fb",
+    "snfr": "snfr-331fb"
+  },
+  "targets": {},
+  "etags": {}
 }
