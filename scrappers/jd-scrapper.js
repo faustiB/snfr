@@ -1,7 +1,8 @@
 const puppeteer = require('puppeteer-extra')
 
-const hidden = require('puppeteer-extra-plugin-stealth')
+const StealthPlugin = require('puppeteer-extra-plugin-stealth')
 const { executablePath } = require('puppeteer')
+
 
 const URL = "https://www.jdsports.es/hombre/calzado-de-hombre/zapatillas/?max=204"
 
@@ -19,21 +20,24 @@ async function handleCookiesJdSports(page) {
 }
 
 async function start() {
-    puppeteer.use(hidden())
+    console.log("Starting JD Sports Scrapper")
+    puppeteer.use(StealthPlugin())
     const browser = await puppeteer.launch({
-        headless: false,
-        ignoreHttpsErrors: true,
+        headless: true,
+        executablePath: executablePath(),
         args: [
             '--incognito',
-        ],
-        executablePath: executablePath()
+        ]
     })
+    console.log("Browser launched")
     const page = await browser.newPage()
     await page.goto(URL, { waitUntil: 'networkidle0' })
+    console.log("Page loaded")
 
     await handleCookiesJdSports(page)
-
+    console.log("Cookies handled")
     let shoes = {}
+    console.log("Starting scraping")
     for (let i = 0; i < 5; i++) {
         let data = await page.evaluate(async (MAX, MIN, i) => {
 
@@ -65,7 +69,7 @@ async function start() {
 
             return { titles, prices, urls, images, nextPage }
         }, MAX, MIN, i)
-
+        console.log("Data scraped")
         //Get all data to shoes object with ternary operator
         shoes.titles = shoes.titles ? shoes.titles.concat(data.titles) : data.titles
         shoes.prices = shoes.prices ? shoes.prices.concat(data.prices) : data.prices
@@ -76,43 +80,38 @@ async function start() {
         let urlToGo = baseURL + data.nextPage
         await page.goto(urlToGo, { waitUntil: 'networkidle0' })
     }
-    let allSizes = []
+    //Code disabled because of the antibot blockage in jd sports website
+    // let allSizes = []
     // for (let i = 0; i < shoes.urls.length; i++) {
-    for (let i = 0; i < 10; i++) {
-        let url = baseURL + shoes.urls[i]
-        await page.goto(url, { waitUntil: 'networkidle0' })
-        await sleep(Math.random() * (MAX - MIN) + MIN)
-        let attrs = await page.evaluate(async () => {
-            return Array.from(document.querySelectorAll("#productSizeStock > button")).map(x => x.getAttribute("data-stock"))
-        })
-        let sizes = await page.evaluate(async () => {
-            let sizesDirty  = Array.from(document.querySelectorAll("#productSizeStock > button")).map(x => x.textContent)
-            sizesDirty = sizesDirty.map(x => x.replace(/\t/g, ' '))
-            sizesDirty = sizesDirty.map(x => x.replace(/(\r\n|\n|\r)/gm, " "))
-            sizesDirty = sizesDirty.map(x => x.split(' '))
-            sizesClean = sizesDirty.map(x => x[5].concat(" "+x[6]).trim())
+    //     let url = baseURL + shoes.urls[i]
+    //     await page.goto(url, { waitUntil: 'networkidle0' })
+    //     await sleep(Math.random() * (MAX - MIN) + MIN)
+    //     let attrs = await page.evaluate(async () => {
+    //         return Array.from(document.querySelectorAll("#productSizeStock > button")).map(x => x.getAttribute("data-stock"))
+    //     })
+    //     let sizes = await page.evaluate(async () => {
+    //         let sizesDirty  = Array.from(document.querySelectorAll("#productSizeStock > button")).map(x => x.textContent)
+    //         sizesDirty = sizesDirty.map(x => x.replace(/\t/g, ' '))
+    //         sizesDirty = sizesDirty.map(x => x.replace(/(\r\n|\n|\r)/gm, " "))
+    //         sizesDirty = sizesDirty.map(x => x.split(' '))
+    //         sizesClean = sizesDirty.map(x => x[5].concat(" "+x[6]).trim())
 
-            return sizesClean
-        })
-        let sizesAvailable = []
-        for (let i = 0; i < attrs.length; i++) {
-            if (attrs[i] === "1") {
-                sizesAvailable.push(sizes[i])
-            }
-        }
-        allSizes.push(sizesAvailable)
-    }
-    shoes.sizes = allSizes
+    //         return sizesClean
+    //     })
+    //     let sizesAvailable = []
+    //     for (let i = 0; i < attrs.length; i++) {
+    //         if (attrs[i] === "1") {
+    //             sizesAvailable.push(sizes[i])
+    //         }
+    //     }
+    //     allSizes.push(sizesAvailable)
+    // }
+    // shoes.sizes = allSizes
     await browser.close()
     console.log(shoes)
     return shoes
 }
 
-function helloWorld() {
-    console.log('Hello World')
-    return "HELLOOOOOOOOOOOOO3"
-}
-
 module.exports = {
-    start, helloWorld
+    start
 }

@@ -58,29 +58,30 @@ async function start() {
 
     })
     
-    // retrieve shoe sizes
-    var allSizes = []
-    for (const url of shoes.urls) {
-        await page.goto(`${url}`);
+    // Code disabled because of the antibot blockage in nike website
+    // var allSizes = []
+    // for (const url of shoes.urls) {
+    //     await page.goto(`${url}`);
 
-        //handle requestes 
-        await sleep(Math.random() * (MAX - MIN) + MIN)
+    //     //handle requestes 
+    //     await sleep(Math.random() * (MAX - MIN) + MIN)
 
-        var sizes = await page.evaluate(async () => {
-            return Array.from(document.querySelectorAll('input[name=skuAndSize]:not(:disabled) + label')).map(size => size.innerHTML)
+    //     var sizes = await page.evaluate(async () => {
+    //         return Array.from(document.querySelectorAll('input[name=skuAndSize]:not(:disabled) + label')).map(size => size.innerHTML)
 
-        })
-        if (sizes.length == 0) {
-            sizes = await page.evaluate(async () => {
-                return Array.from(document.querySelectorAll('.size-grid-dropdown:not(:disabled)')).map(size => size.innerHTML)
-            })
-        }
-        allSizes.push(sizes)
-    }
+    //     })
+    //     if (sizes.length == 0) {
+    //         sizes = await page.evaluate(async () => {
+    //             return Array.from(document.querySelectorAll('.size-grid-dropdown:not(:disabled)')).map(size => size.innerHTML)
+    //         })
+    //     }
+    //     allSizes.push(sizes)
+    // }
 
-    shoes['sizes'] = allSizes
+    // shoes['sizes'] = allSizes
     console.log(shoes)
     await browser.close()
+    return shoes
 
 }
 

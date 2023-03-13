@@ -10,15 +10,15 @@ admin.initializeApp()
 
 exports.helloWorld = functions.https.onRequest(async (request, res) => {
   let shoes = await jdScrapper.start()
-  for (let i = 0; i < shoes.titles.length; i++) {
-    await admin.firestore().collection('shoes').add({
-      title: shoes.titles[i],
-      price: shoes.prices[i],
-      url: shoes.urls[i],
-      image: shoes.images[i],
-      sizes: shoes.sizes[i]
-    })
-  }
+  // for (let i = 0; i < shoes.titles.length; i++) {
+  //   await admin.firestore().collection('shoes').add({
+  //     title: shoes.titles[i],
+  //     price: shoes.prices[i],
+  //     url: shoes.urls[i],
+  //     image: shoes.images[i],
+  //     sizes: shoes.sizes[i]
+  //   })
+  // }
   res.json(shoes);
 });
 // Take the text parameter passed to this HTTP endpoint and insert it into
