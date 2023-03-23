@@ -1,20 +1,44 @@
-// const functions = require('firebase-functions')
-// const admin = require('firebase-admin')
+const nikeScrapper = require('./scrappers/nike-scrapper')
+const jdScrapper = require('./scrappers/jd-scrapper')
 
-const nike_scrapper = require('./functions/scrappers/nike-scrapper')
-const jd_scrapper = require('./functions/scrappers/jd-scrapper')
+const express = require('express')
+const app = express()
+const port = 3000
 
-async function start() {
+
+app.get('/', async (req, res) => {
+    let nikeShoes = await nikeScrapper.start()
+    let jdShoes = await jdScrapper.start()
+
+    console.log(nikeShoes)
+    console.log("---------------------------------------")
+    console.log("---------------------------------------")
+    console.log("---------------------------------------")
+    console.log(jdShoes)
+
+    let shoes = {
+        titles: nikeShoes.titles.concat(jdShoes.titles),
+        prices: nikeShoes.prices.concat(jdShoes.prices),
+        urls: nikeShoes.urls.concat(jdShoes.urls),
+        images: nikeShoes.images.concat(jdShoes.images),
+    }
+
+    res.json(shoes)
+})
 
 
-let jdShoes = await jd_scrapper.start()
-// let nikeShoes = nike_scrapper.start()
 
-console.log(jdShoes)
+// async function start() {
+
+// // let jdShoes = await jd_scrapper.start()
+// let nikeShoes = await nike_scrapper.start()
+
+// // console.log(jdShoes)
 // console.log(nikeShoes)
 
-}
+// }
 
-start()
-
+app.listen(port, () => {
+    console.log(`SNFR Scrapper listening at http://localhost:${port}`)
+})
 // admin.initializeApp(functions.config().firebase)
