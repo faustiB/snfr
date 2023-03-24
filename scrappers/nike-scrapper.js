@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer')
 
-const MAX = 5000
-const MIN = 2000
+const MAX = 5748
+const MIN = 2728
 
 
 function sleep(ms) {
@@ -16,7 +16,7 @@ async function handleCookiesNike(page) {
 async function start() {
     const browser = await puppeteer.launch({
         ignoreHttpsErrors: true,
-        headless: true,
+        headless: false,
         args: [
             '--incognito',
             '--no-sandbox',
@@ -34,25 +34,25 @@ async function start() {
     const shoes = await page.evaluate(async () => {
 
         //Random Scroll
-        // await new Promise((resolve) => {
-        //       var totalHeight = 0
-        //       var distance = 100
-        //       var timer = setInterval(() => {
-        //           var scrollHeight = document.body.scrollHeight;
-        //           window.scrollBy(0, distance);
-        //           totalHeight += distance;
+        await new Promise((resolve) => {
+              var totalHeight = 0
+              var distance = 100
+              var timer = setInterval(() => {
+                  var scrollHeight = document.body.scrollHeight;
+                  window.scrollBy(0, distance);
+                  totalHeight += distance;
   
-        //           if (totalHeight >= scrollHeight - window.innerHeight) {
-        //               clearInterval(timer)
-        //               resolve()
-        //           }
-        //       }, Math.random() * (MAX - MIN) + MIN)
-        //   })
-  
-        const titles = Array.from(document.querySelectorAll('.product-card__title')).map(x => x.textContent)
+                  if (totalHeight >= scrollHeight - window.innerHeight) {
+                      clearInterval(timer)
+                      resolve()
+                  }
+              }, Math.random() * (MAX - MIN) + MIN)
+          })
+
+        const titles = Array.from(document.querySelectorAll('.product-card__title')).filter(x => x.textContent != 'Tarjeta de regalo Nike').map(x => x.textContent)
         const prices = Array.from(document.querySelectorAll('.is--current-price')).map(x => x.textContent)
         const urls = Array.from(document.querySelectorAll('.product-card__img-link-overlay'), a => a.getAttribute("href"))
-        const images = Array.from(document.querySelectorAll('.product-card__hero-image')).map(x => x.getAttribute("src"))
+        const images = Array.from(document.querySelectorAll('.product-card__hero-image')).filter(x => x.getAttribute("alt") != 'Tarjeta de regalo Nike null').map(x => x.getAttribute("src"))
 
         return {
             titles: titles,
