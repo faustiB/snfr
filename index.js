@@ -25,6 +25,7 @@ app.get('/', async (req, res) => {
         }
     })
 
+    //write all nike shoes in cloud firestore
     nikeShoes.titles.forEach(title => {
         db.collection('shoes').add({
             title: title,
@@ -35,6 +36,8 @@ app.get('/', async (req, res) => {
     })
 
     let jdShoes = await jdScrapper.start()
+
+    //write all jd shoes in cloud firestore
     jdShoes.titles.forEach(title => {
         db.collection('shoes').add({
             title: title,
