@@ -3,20 +3,25 @@ const puppeteer = require('puppeteer')
 const MAX = 5748
 const MIN = 2728
 
+const URL = 'https://www.nike.com/es/w/zapatillas-y7okz'
 
+//Function to wait random time
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+//Function to handle the cookies popup of nike page 
 async function handleCookiesNike(page) {
     await page.waitForSelector('#gen-nav-commerce-header-v2 > div.pre-modal-window.is-active > div > div:nth-child(3) > div > div.ncss-row.mt5-sm.mb7-sm > div:nth-child(2) > button')
     await page.click('#gen-nav-commerce-header-v2 > div.pre-modal-window.is-active > div > div:nth-child(3) > div > div.ncss-row.mt5-sm.mb7-sm > div:nth-child(2) > button')
 }
 
+// function that starts the scrapper
 async function start() {
     const browser = await puppeteer.launch({
         ignoreHttpsErrors: true,
         headless: false,
+        windowSize: '1920,1080',
         args: [
             '--incognito',
             '--no-sandbox',
@@ -25,23 +30,22 @@ async function start() {
     })
     console.log('Nike: Scrapper launched')
     const page = await browser.newPage()
-    await page.goto('https://www.nike.com/es/w/zapatillas-y7ok', { waitUntil: 'networkidle0' })
+    await page.goto(URL, { waitUntil: 'networkidle0' })
 
     await handleCookiesNike(page)
     console.log('Nike: Cookies handled')
 
     console.log('Nike: Scraping...')
-    const shoes = await page.evaluate(async () => {
+    const shoes = await page.evaluate(async (MAX, MIN) => {
 
         //Random Scroll
         await new Promise((resolve) => {
               var totalHeight = 0
-              var distance = 100
+              var distance = 950
               var timer = setInterval(() => {
                   var scrollHeight = document.body.scrollHeight;
                   window.scrollBy(0, distance);
                   totalHeight += distance;
-  
                   if (totalHeight >= scrollHeight - window.innerHeight) {
                       clearInterval(timer)
                       resolve()
@@ -61,7 +65,7 @@ async function start() {
             images: images
         }
 
-    })
+    }, MAX, MIN)
     
     // Code disabled because of the antibot blockage in nike website
     // var allSizes = []

@@ -10,19 +10,22 @@ const baseURL = 'https://www.jdsports.es/'
 const MAX = 7383
 const MIN = 3324
 
+//Function to wait random time
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+//Function to handle the cookies popup of JD Sports page
 async function handleCookiesJdSports(page) {
     await page.waitForSelector('.btn.btn-level1.accept-all-cookies')
     await page.click('.btn.btn-level1.accept-all-cookies')
 }
 
+// function that starts the scrapper
 async function start() {
     puppeteer.use(StealthPlugin())
     const browser = await puppeteer.launch({
-        headless: true,
+        headless: false,
         executablePath: executablePath(),
         args: [
             '--incognito',
@@ -47,7 +50,7 @@ async function start() {
             //Random Scroll
             await new Promise((resolve) => {
                 var totalHeight = 0
-                var distance = 750
+                var distance = 970
                 var timer = setInterval(() => {
                     var scrollHeight = document.body.scrollHeight;
                     window.scrollBy(0, distance);
@@ -62,7 +65,6 @@ async function start() {
             let titles = Array.from(document.querySelectorAll('.itemTitle')).map(x => x.textContent.trim())
             let prices = Array.from(document.querySelectorAll('.pri')).map(x => x.textContent.split("- ")[0])
             let urls = Array.from(document.querySelectorAll('.itemTitle > a'), a => a.getAttribute("href")).map(x => baseURL + x)
-            // let images = Array.from(document.querySelectorAll(".thumbnail.overlay-thumbnail img")).map(x => x.getAttribute("data-src"))
             let images = Array.from(document.querySelectorAll(".listProducts li > span > a > picture > img")).map(x => x.getAttribute("src"))
 
             if (i === 0) {
